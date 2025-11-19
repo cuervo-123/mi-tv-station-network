@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi TV Station • App Center</title>
+
+  <!-- Fuente bonita -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #020512;
+      --bg-soft: #050a1f;
+      --card: #070d24;
+      --accent: #1f8bff;
+      --accent-soft: rgba(31, 139, 255, 0.35);
+      --accent-strong: #4ac3ff;
+      --text: #f3f6ff;
+      --text-soft: #a7b4d9;
+      --border: #1a2444;
+      --danger: #ff4b6a;
+      --radius-lg: 22px;
+      --radius-md: 14px;
+      --shadow-soft: 0 24px 60px rgba(0,0,0,0.65);
+      --shadow-accent: 0 0 40px rgba(31, 139, 255, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(55, 143, 255, 0.25), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(0, 255, 213, 0.15), transparent 55%),
+        radial-gradient(circle at 50% 120%, rgba(88, 0, 255, 0.35), transparent 65%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 14px 40px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 22px;
+      background: radial-gradient(circle at 0 0, rgba(31,139,255,0.7), rgba(2,5,18,0.98));
+      border-radius: 28px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(109, 165, 255, 0.45);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.08), transparent 55%),
+        radial-gradient(circle at 120% 10%, rgba(0,255,213,0.12), transparent 50%);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-badge {
+      width: 74px;
+      height: 74px;
+      border-radius: 22px;
+      background: radial-gradient(circle at 30% 0, #4ac3ff, #0066ff);
+      box-shadow: var(--shadow-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .brand-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .brand-mark {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+
+    .header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .header-title h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .header-title span {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .header-badge {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(234, 241, 255, 0.4);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      color: #eaf1ff;
+      background: rgba(4, 9, 27, 0.75);
+      backdrop-filter: blur(16px);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #37ff9f;
+      box-shadow: 0 0 14px rgba(55,255,159,0.9);
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(4, 9, 27, 0.82);
+      border: 1px solid rgba(122, 165, 255, 0.55);
+      box-shadow: 0 0 26px rgba(9, 40, 120, 0.6);
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 13px;
+      min-width: 0;
+    }
+
+    .search-box input::placeholder {
+      color: rgba(196, 209, 255, 0.7);
+    }
+
+    .search-icon {
+      font-size: 15px;
+      opacity: 0.9;
+    }
+
+    .pill {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    /* Grid de apps */
+    .section-title {
+      margin: 12px 4px 6px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(72, 124, 255, 0.4), transparent);
+    }
+
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 4px;
+    }
+
+    .app-card {
+      background: radial-gradient(circle at 0 0, rgba(31,139,255,0.1), var(--card));
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(48, 86, 184, 0.7);
+      box-shadow: var(--shadow-soft);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+      transition: transform .16s ease-out, box-shadow .16s ease-out, border-color .16s ease-out;
+    }
+
+    .app-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0 0, rgba(66, 181, 255, 0.17), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(107, 227, 255, 0.12), transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .app-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 26px 80px rgba(0,0,0,0.95);
+      border-color: var(--accent-strong);
+    }
+
+    .app-card-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Poster */
+    .app-poster {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      background: radial-gradient(circle at 10% 0, #4ac3ff, #041028);
+    }
+
+    .app-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .app-poster-label {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(3, 10, 29, 0.85);
+      border: 1px solid rgba(206, 222, 255, 0.8);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: .15em;
+      color: #e4ecff;
+    }
+
+    /* Info */
+    .app-main-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .app-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: radial-gradient(circle at 30% 0, #4ac3ff, #0066ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(31,139,255,0.9);
+      overflow: hidden;
+    }
+
+    .app-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .app-title-block {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .app-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .app-subtitle {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(92, 132, 255, 0.7);
+      background: rgba(7, 14, 39, 0.85);
+      color: #d5e1ff;
+    }
+
+    .app-description {
+      font-size: 11px;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    /* QR + botones */
+    .app-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .qr-box {
+      width: 82px;
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      background: #f7f4ec;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 22px rgba(0,0,0,0.7);
+      flex-shrink: 0;
+    }
+
+    .qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      align-items: flex-end;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 11px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: background .16s, transform .08s ease-out, box-shadow .16s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #02040e;
+      box-shadow: 0 12px 30px rgba(9, 94, 255, 0.8);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(9, 94, 255, 0.9);
+    }
+
+    .btn-ghost {
+      background: rgba(3, 9, 27, 0.9);
+      border: 1px solid rgba(121, 152, 240, 0.8);
+      color: var(--text-soft);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(10, 22, 61, 0.95);
+    }
+
+    .btn-icon {
+      font-size: 13px;
+    }
+
+    /* Footer global */
+    .site-footer {
+      margin-top: 28px;
+      font-size: 11px;
+      color: var(--text-soft);
+      text-align: center;
+      opacity: 0.8;
+    }
+
+    .site-footer span {
+      color: var(--accent-strong);
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 18px 10px 28px;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-right {
+        align-items: flex-start;
+        width: 100%;
+      }
+      .search-box {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-left">
+        <div class="brand-badge">
+          <!-- Pon aquí tu logo oficial -->
+          <img src="logo-mi-tv-station.png" alt="Mi TV Station Logo" onerror="this.style.display='none'">
+          <!-- Si no carga la imagen, se verá la marca de texto -->
+          <span class="brand-mark" style="display:none;">TV</span>
+        </div>
+        <div class="header-title">
+          <h1>Mi TV Station App Center</h1>
+          <span>Central de Apps · Ultimate IPTV + VOD Network</span>
+          <div class="header-badge">
+            <span class="header-badge-dot"></span>
+            <span>Online · Powered by Julian Sánchez</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input id="searchInput" type="text" placeholder="Buscar app por nombre, tipo o función…" />
+        </div>
+        <div class="pill">Escanea el QR o pulsa “Abrir app” para entrar ➜</div>
+      </div>
+    </header>
+
+    <!-- GRID -->
+    <h2 class="section-title">Tus aplicaciones</h2>
+    <section id="appsContainer" class="app-grid">
+      <!-- Las tarjetas se crean por JavaScript -->
+    </section>
+
+    <footer class="site-footer">
+      Mi TV Station Network · Construido con 💙 por <span>Julian Sánchez</span>
+    </footer>
+  </div>
+
+  <script>
+    // ====== CONFIGURA AQUÍ TUS APPS ======
+    const apps = [
+      {
+        id: "mi-tv-station",
+        nombre: "Mi TV Station",
+        subtitulo: "Ultimate IPTV + VOD",
+        descripcion: "Panel IPTV + VOD con favoritos, listas M3U, categorías, buscador y canales internos. Diseñado para usarse en Smart TV, PC y móvil.",
+        tags: ["IPTV", "VOD", "M3U", "Smart TV"],
+        url: "https://cuervo-123.github.io/mi-tv-station/",
+        poster: "poster-mi-tv-station.png",   // Cambia por tu poster real
+        icono: "logo-mi-tv-station.png",      // Puede ser mismo logo
+        qr: "qr-mi-tv-station.png",           // Imagen del QR
+        tipoPoster: "APP IPTV"
+      }
+
+      // 👉 Para agregar otra app copia este bloque:
+      /*
+      ,{
+        id: "id-unico",
+        nombre: "Nombre de la App",
+        subtitulo: "Frase corta",
+        descripcion: "Descripción breve de la app.",
+        tags: ["IPTV", "YouTube", "4 Monitores"],
+        url: "https://TU-URL-AQUI",
+        poster: "poster-otra-app.png",
+        icono: "icono-otra-app.png",
+        qr: "qr-otra-app.png",
+        tipoPoster: "BETA" // texto pequeño sobre el poster
+      }
+      */
+    ];
+
+    // ====== Render de tarjetas ======
+    const appsContainer = document.getElementById("appsContainer");
+    const searchInput = document.getElementById("searchInput");
+
+    function renderApps(filter = "") {
+      const term = filter.trim().toLowerCase();
+      appsContainer.innerHTML = "";
+
+      const filtered = apps.filter(app => {
+        if (!term) return true;
+        const haystack = [
+          app.nombre,
+          app.subtitulo,
+          app.descripcion,
+          ...(app.tags || [])
+        ]
+          .join(" ")
+          .toLowerCase();
+        return haystack.includes(term);
+      });
+
+      if (!filtered.length) {
+        appsContainer.innerHTML =
+          '<p style="grid-column:1/-1;font-size:13px;color:#9aa4c7;opacity:.9;">No se encontraron apps para tu búsqueda.</p>';
+        return;
+      }
+
+      for (const app of filtered) {
+        const card = document.createElement("article");
+        card.className = "app-card";
+        card.innerHTML = `
+          <div class="app-card-inner">
+            <div class="app-poster">
+              ${app.poster ? `<img src="${app.poster}" alt="Poster de ${app.nombre}">` : ""}
+              <div class="app-poster-label">${app.tipoPoster || "APP"}</div>
+            </div>
+
+            <div class="app-main-row">
+              <div class="app-icon">
+                ${app.icono ? `<img src="${app.icono}" alt="Icono ${app.nombre}">` : `<span>${app.nombre[0] || "A"}</span>`}
+              </div>
+              <div class="app-title-block">
+                <div class="app-title">${app.nombre}</div>
+                <div class="app-subtitle">${app.subtitulo || ""}</div>
+                <div class="tags">
+                  ${(app.tags || [])
+                    .map(tag => `<span class="tag">${tag}</span>`)
+                    .join("")}
+                </div>
+              </div>
+            </div>
+
+            <p class="app-description">${app.descripcion || ""}</p>
+
+            <div class="app-footer">
+              <div class="qr-box">
+                ${app.qr ? `<img src="${app.qr}" alt="QR ${app.nombre}">` : ""}
+              </div>
+              <div class="actions">
+                <button class="btn btn-primary" data-open="${app.id}">
+                  <span class="btn-icon">🚀</span>
+                  <span>Abrir app</span>
+                </button>
+                <button class="btn btn-ghost" data-copy="${app.id}">
+                  <span class="btn-icon">🔗</span>
+                  <span>Copiar enlace</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        appsContainer.appendChild(card);
+      }
+    }
+
+    // Abrir app
+    document.addEventListener("click", (e) => {
+      const openBtn = e.target.closest("[data-open]");
+      const copyBtn = e.target.closest("[data-copy]");
+
+      if (openBtn) {
+        const id = openBtn.getAttribute("data-open");
+        const app = apps.find(a => a.id === id);
+        if (app && app.url) {
+          window.open(app.url, "_blank");
+        }
+      }
+
+      if (copyBtn) {
+        const id = copyBtn.getAttribute("data-copy");
+        const app = apps.find(a => a.id === id);
+        if (app && app.url) {
+          navigator.clipboard.writeText(app.url).then(() => {
+            copyBtn.innerHTML = '<span class="btn-icon">✅</span><span>Enlace copiado</span>';
+            setTimeout(() => {
+              copyBtn.innerHTML = '<span class="btn-icon">🔗</span><span>Copiar enlace</span>';
+            }, 1800);
+          });
+        }
+      }
+    });
+
+    // Búsqueda
+    searchInput.addEventListener("input", () => {
+      renderApps(searchInput.value);
+    });
+
+    // Primera carga
+    renderApps();
+  </script>
+</body>
+</html>
